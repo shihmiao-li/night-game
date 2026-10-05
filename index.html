@@ -1,0 +1,796 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  <title>天黑請閉眼</title>
+
+  <meta name="theme-color" content="#1f2937">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="天黑請閉眼">
+
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icon-180.png">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "PingFang TC",
+        "Noto Sans TC",
+        sans-serif;
+      background: #f5f5f7;
+      color: #111827;
+    }
+
+    main {
+      width: min(100%, 620px);
+      margin: 0 auto;
+      padding: 24px 18px 40px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 28px;
+      padding: 28px 22px;
+      box-shadow: 0 4px 18px rgba(0,0,0,.08);
+    }
+
+    .center {
+      text-align: center;
+    }
+
+    .emoji {
+      font-size: 64px;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: 34px;
+      margin: 8px 0;
+    }
+
+    h2 {
+      font-size: 30px;
+      margin: 8px 0;
+    }
+
+    .muted {
+      color: #6b7280;
+      font-size: 17px;
+    }
+
+    .section {
+      margin-top: 28px;
+    }
+
+    .label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .label {
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .counter {
+      display: grid;
+      grid-template-columns: 64px 1fr 64px;
+      gap: 12px;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .counter button {
+      min-height: 64px;
+      border-radius: 18px;
+      border: 1px solid #d1d5db;
+      background: #f3f4f6;
+      font-size: 32px;
+      font-weight: 900;
+    }
+
+    .number {
+      min-height: 64px;
+      border-radius: 18px;
+      background: #f3f4f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: 900;
+    }
+
+    .summary {
+      margin-top: 28px;
+      padding: 18px;
+      border-radius: 18px;
+      background: #f3f4f6;
+      text-align: center;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .primary,
+    .secondary {
+      width: 100%;
+      min-height: 64px;
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      font-size: 21px;
+      font-weight: 900;
+    }
+
+    .primary {
+      border: none;
+      background: #dbeafe;
+      color: #111827;
+    }
+
+    .secondary {
+      border: 1px solid #d1d5db;
+      background: #f3f4f6;
+      color: #111827;
+    }
+
+    .huge {
+      font-size: 52px;
+      font-weight: 900;
+      margin: 14px 0;
+    }
+
+    .roleEmoji {
+      font-size: 88px;
+    }
+
+    .roleName {
+      font-size: 52px;
+      font-weight: 900;
+      margin: 10px 0;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .notice {
+      background: #f3f4f6;
+      border-radius: 18px;
+      padding: 18px;
+      margin-top: 18px;
+      font-size: 19px;
+      font-weight: 700;
+    }
+
+    .review-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      background: #f3f4f6;
+      padding: 17px;
+      border-radius: 18px;
+      margin-top: 12px;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    @media (max-width: 390px) {
+      h1 {
+        font-size: 30px;
+      }
+
+      .huge {
+        font-size: 44px;
+      }
+
+      .roleName {
+        font-size: 46px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<main>
+
+  <!-- 設定 -->
+  <section id="setup">
+    <div class="card">
+
+      <div class="center">
+        <div class="emoji">🌙</div>
+        <h1>天黑請閉眼</h1>
+        <div class="muted">先分配每個人的祕密身分</div>
+      </div>
+
+      <div class="section">
+
+        <div class="label-row">
+          <div class="label">👧 玩家人數</div>
+          <div class="muted">3–12 人</div>
+        </div>
+
+        <div class="counter">
+          <button id="playerMinus">−</button>
+          <div id="playerCount" class="number">6</div>
+          <button id="playerPlus">＋</button>
+        </div>
+
+      </div>
+
+      <div class="section">
+
+        <div class="label-row">
+          <div class="label">🕵️ 壞人人數</div>
+          <div id="badLimit" class="muted"></div>
+        </div>
+
+        <div class="counter">
+          <button id="badMinus">−</button>
+          <div id="badCount" class="number">2</div>
+          <button id="badPlus">＋</button>
+        </div>
+
+      </div>
+
+      <div id="summary" class="summary"></div>
+
+      <button id="startButton" class="primary">
+        🎲 開始分配身分
+      </button>
+
+    </div>
+  </section>
+
+
+  <!-- 交手機 -->
+  <section id="handoff" class="hidden">
+    <div class="card center">
+
+      <div class="emoji">📱</div>
+
+      <div class="muted">請把手機交給</div>
+
+      <div id="handoffPlayer" class="huge"></div>
+
+      <div class="notice">
+        🙈 確定其他人沒有偷看喔！
+      </div>
+
+      <button id="readyButton" class="primary">
+        我準備好了
+      </button>
+
+    </div>
+  </section>
+
+
+  <!-- 查看身分 -->
+  <section id="reveal" class="hidden">
+    <div class="card center">
+
+      <div id="closedRole">
+
+        <div class="emoji">🔒</div>
+
+        <h2 id="revealPlayer"></h2>
+
+        <div class="muted">
+          只有你可以看自己的身分
+        </div>
+
+        <button id="revealButton" class="primary">
+          👀 查看我的身分
+        </button>
+
+      </div>
+
+
+      <div id="openRole" class="hidden">
+
+        <div id="roleEmoji" class="roleEmoji"></div>
+
+        <div class="muted">你的身分是</div>
+
+        <div id="roleName" class="roleName"></div>
+
+        <div id="roleHelp" class="notice"></div>
+
+        <div class="notice">
+          🤫 記住自己的身分，不要說出來！
+        </div>
+
+        <button id="hideButton" class="primary">
+          ✅ 我記住了
+        </button>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- 完成 -->
+  <section id="done" class="hidden">
+    <div class="card center">
+
+      <div class="emoji">🌙</div>
+
+      <h1>全部分配完成！</h1>
+
+      <div class="muted">
+        每個人都知道自己的身分了
+      </div>
+
+      <div class="notice">
+        👀 天黑請閉眼
+      </div>
+
+      <button id="reviewButton" class="secondary">
+        🔍 查看本局身分
+      </button>
+
+      <button id="restartSame" class="primary">
+        🔀 同樣人數，再玩一次
+      </button>
+
+      <button id="restartNew" class="secondary">
+        ⚙️ 重新設定人數
+      </button>
+
+    </div>
+  </section>
+
+
+  <!-- 復盤確認 -->
+  <section id="reviewConfirm" class="hidden">
+    <div class="card center">
+
+      <div class="emoji">⚠️</div>
+
+      <h2>要公布所有人的身分嗎？</h2>
+
+      <div class="muted">
+        接下來會直接公布這一局所有人的身分。
+      </div>
+
+      <button id="confirmReview" class="primary">
+        ✅ 確定，開始復盤
+      </button>
+
+      <button id="cancelReview" class="secondary">
+        ↩️ 還不要公布
+      </button>
+
+    </div>
+  </section>
+
+
+  <!-- 復盤 -->
+  <section id="review" class="hidden">
+    <div class="card">
+
+      <div class="center">
+        <div class="emoji">🧾</div>
+        <h1>本局身分復盤</h1>
+        <div class="muted">
+          大家一起看看剛才誰是誰！
+        </div>
+      </div>
+
+      <div id="reviewList"></div>
+
+      <button id="reviewBack" class="secondary">
+        ↩️ 回到結束畫面
+      </button>
+
+    </div>
+  </section>
+
+</main>
+
+
+<script>
+
+const screens = {
+  setup: document.getElementById("setup"),
+  handoff: document.getElementById("handoff"),
+  reveal: document.getElementById("reveal"),
+  done: document.getElementById("done"),
+  reviewConfirm: document.getElementById("reviewConfirm"),
+  review: document.getElementById("review")
+};
+
+let playerCount = 6;
+let badCount = 2;
+
+let roles = [];
+let currentIndex = 0;
+
+
+function maxBad() {
+  return Math.max(1, Math.floor(playerCount / 2));
+}
+
+
+function showScreen(name) {
+
+  Object.values(screens).forEach(el => {
+    el.classList.add("hidden");
+  });
+
+  screens[name].classList.remove("hidden");
+
+  window.scrollTo(0, 0);
+}
+
+
+function updateSetup() {
+
+  playerCount =
+    Math.max(3, Math.min(12, playerCount));
+
+  badCount =
+    Math.max(1, Math.min(maxBad(), badCount));
+
+  document.getElementById("playerCount").textContent =
+    playerCount;
+
+  document.getElementById("badCount").textContent =
+    badCount;
+
+  document.getElementById("badLimit").textContent =
+    `最多 ${maxBad()} 人`;
+
+  document.getElementById("summary").textContent =
+    `${playerCount} 位玩家：${badCount} 位壞人、${playerCount - badCount} 位好人`;
+
+}
+
+
+function shuffle(array) {
+
+  for (let i = array.length - 1; i > 0; i--) {
+
+    const j =
+      Math.floor(Math.random() * (i + 1));
+
+    [array[i], array[j]] =
+      [array[j], array[i]];
+
+  }
+
+  return array;
+
+}
+
+
+function createRoles() {
+
+  const list = [];
+
+  for (let i = 0; i < badCount; i++) {
+    list.push("bad");
+  }
+
+  for (
+    let i = 0;
+    i < playerCount - badCount;
+    i++
+  ) {
+    list.push("good");
+  }
+
+  return shuffle(list);
+
+}
+
+
+function startGame() {
+
+  roles = createRoles();
+
+  currentIndex = 0;
+
+  showHandoff();
+
+}
+
+
+function showHandoff() {
+
+  document.getElementById(
+    "handoffPlayer"
+  ).textContent =
+    `玩家 ${currentIndex + 1}`;
+
+  showScreen("handoff");
+
+}
+
+
+function showReveal() {
+
+  document.getElementById(
+    "revealPlayer"
+  ).textContent =
+    `玩家 ${currentIndex + 1}`;
+
+  document.getElementById(
+    "closedRole"
+  ).classList.remove("hidden");
+
+  document.getElementById(
+    "openRole"
+  ).classList.add("hidden");
+
+  showScreen("reveal");
+
+}
+
+
+function revealRole() {
+
+  const role = roles[currentIndex];
+
+  document.getElementById(
+    "closedRole"
+  ).classList.add("hidden");
+
+  document.getElementById(
+    "openRole"
+  ).classList.remove("hidden");
+
+  if (role === "bad") {
+
+    document.getElementById(
+      "roleEmoji"
+    ).textContent = "🕵️";
+
+    document.getElementById(
+      "roleName"
+    ).textContent = "壞人";
+
+    document.getElementById(
+      "roleHelp"
+    ).textContent =
+      "偷偷完成你的任務，不要被發現！";
+
+  } else {
+
+    document.getElementById(
+      "roleEmoji"
+    ).textContent = "🙂";
+
+    document.getElementById(
+      "roleName"
+    ).textContent = "好人";
+
+    document.getElementById(
+      "roleHelp"
+    ).textContent =
+      "仔細觀察，找出藏起來的壞人！";
+
+  }
+
+}
+
+
+function nextPlayer() {
+
+  currentIndex++;
+
+  if (currentIndex >= playerCount) {
+
+    showScreen("done");
+
+  } else {
+
+    showHandoff();
+
+  }
+
+}
+
+
+function buildReview() {
+
+  const list =
+    document.getElementById("reviewList");
+
+  list.innerHTML = "";
+
+  roles.forEach((role, index) => {
+
+    const row =
+      document.createElement("div");
+
+    row.className = "review-item";
+
+    const player =
+      document.createElement("span");
+
+    player.textContent =
+      `玩家 ${index + 1}`;
+
+    const identity =
+      document.createElement("span");
+
+    identity.textContent =
+      role === "bad"
+      ? "🕵️ 壞人"
+      : "🙂 好人";
+
+    row.append(player, identity);
+
+    list.appendChild(row);
+
+  });
+
+}
+
+
+document.getElementById(
+  "playerMinus"
+).onclick = () => {
+
+  playerCount--;
+
+  updateSetup();
+
+};
+
+
+document.getElementById(
+  "playerPlus"
+).onclick = () => {
+
+  playerCount++;
+
+  updateSetup();
+
+};
+
+
+document.getElementById(
+  "badMinus"
+).onclick = () => {
+
+  badCount--;
+
+  updateSetup();
+
+};
+
+
+document.getElementById(
+  "badPlus"
+).onclick = () => {
+
+  badCount++;
+
+  updateSetup();
+
+};
+
+
+document.getElementById(
+  "startButton"
+).onclick = startGame;
+
+
+document.getElementById(
+  "readyButton"
+).onclick = showReveal;
+
+
+document.getElementById(
+  "revealButton"
+).onclick = revealRole;
+
+
+document.getElementById(
+  "hideButton"
+).onclick = nextPlayer;
+
+
+document.getElementById(
+  "reviewButton"
+).onclick = () => {
+
+  showScreen("reviewConfirm");
+
+};
+
+
+document.getElementById(
+  "cancelReview"
+).onclick = () => {
+
+  showScreen("done");
+
+};
+
+
+document.getElementById(
+  "confirmReview"
+).onclick = () => {
+
+  buildReview();
+
+  showScreen("review");
+
+};
+
+
+document.getElementById(
+  "reviewBack"
+).onclick = () => {
+
+  showScreen("done");
+
+};
+
+
+document.getElementById(
+  "restartSame"
+).onclick = startGame;
+
+
+document.getElementById(
+  "restartNew"
+).onclick = () => {
+
+  roles = [];
+
+  currentIndex = 0;
+
+  showScreen("setup");
+
+};
+
+
+updateSetup();
+
+
+if ("serviceWorker" in navigator) {
+
+  window.addEventListener("load", () => {
+
+    navigator.serviceWorker
+      .register("./service-worker.js")
+      .catch(error => {
+        console.log(
+          "Service worker registration failed:",
+          error
+        );
+      });
+
+  });
+
+}
+
+</script>
+
+</body>
+</html>
